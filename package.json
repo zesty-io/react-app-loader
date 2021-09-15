@@ -1,0 +1,23 @@
+{
+  "name": "react-app-loader",
+  "version": "1.0.0",
+  "description": "React component for loading a custom app via the app-sdk",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zesty-io/react-app-loader.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zesty-io/react-app-loader/issues"
+  },
+  "homepage": "https://github.com/zesty-io/react-app-loader#readme",
+  "devDependencies": {
+    "@zesty-io/app-sdk": "^1.0.0-alpha.1",
+    "react": "^17.0.2"
+  }
+}
