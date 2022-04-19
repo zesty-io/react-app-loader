@@ -23,9 +23,10 @@
   "homepage": "https://github.com/zesty-io/react-app-loader#readme",
   "peerDependencies": {
     "@zesty-io/app-sdk": "^1.0.0-alpha.1",
-    "react": "^17.0.2"
+    "react": "^18.0.0"
   },
   "devDependencies": {
+    "@babel/preset-react": "^7.16.7",
     "husky": "^7.0.0",
     "prettier": "^2.3.2",
     "pretty-quick": "^3.1.1"
