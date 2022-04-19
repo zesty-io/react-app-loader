@@ -6,6 +6,7 @@
   "module": "index.js",
   "main": "index.js",
   "scripts": {
+    "build": "rm -rf dist && NODE_ENV=production babel index.js --out-dir dist --copy-files ",
     "release": "npm publish --access public",
     "release:alpha": "npm publish --tag alpha --access public",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -26,6 +27,9 @@
     "react": "^18.0.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.17.6",
+    "@babel/core": "^7.17.9",
+    "@babel/preset-env": "^7.16.11",
     "@babel/preset-react": "^7.16.7",
     "husky": "^7.0.0",
     "prettier": "^2.3.2",
