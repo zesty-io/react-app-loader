@@ -7,8 +7,8 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "rm -rf dist && NODE_ENV=production babel index.js --out-dir dist --copy-files ",
-    "release": "npm publish --access public",
-    "release:alpha": "npm publish --tag alpha --access public",
+    "release": "npm run build && npm publish --access public",
+    "release:alpha": "npm run build && npm publish --tag alpha --access public",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky install"
   },
