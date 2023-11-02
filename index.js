@@ -1,81 +1,77 @@
-import React, { useEffect, useState } from 'react';
-
+import React, { useEffect, useState } from "react";
+import { Box, CircularProgress, Typography } from "@mui/material";
+import { ThemeProvider } from "@mui/material/styles";
 import SDK from "@zesty-io/app-sdk";
+import Cookies from "js-cookie";
+import { SSOButton, SSOButtonGroup, theme } from "@zesty-io/material";
 
-const bar = {
-    animation: "ZestyAppLoaderFade 1s infinite ease-in-out",
-    backgroundColor: "#5b667d",
-    margin: "0.5rem",
-    opacity: "1",
-    width: "1rem"
-}
+const cookieEnvMap = {
+  development: "DEV_APP_SID",
+  stage: "STAGE_APP_SID",
+  production: "APP_SID",
+};
+
+const authApiEnvMap = {
+  development: "https://auth.api.dev.zesty.io",
+  stage: "https://auth.api.stage.zesty.io",
+  production: "https://auth.api.stage.zesty.io",
+};
+
+const isInIframe = window.self !== window.top;
 
 export function AppLoader(props) {
-    const [token, setToken] = useState(props.token || "")
-    const [instance, setInstance] = useState(props.instance || {})
+  const [token, setToken] = useState(
+    props.token || Cookies.get(cookieEnvMap[props.env || "production"]) || ""
+  );
+  const [instance, setInstance] = useState(props.instance || {});
 
-    useEffect(() => {
-        // Pass token on init if provided, otherwise 
-        // sdk will listen for token from parent window
-        SDK.init(token, instance).then(json => {
-            setInstance(json.instance)
-            setToken(json.token)
-        });
-    }, [])
+  useEffect(() => {
+    // Initialize the SDK if we are in an iframe and no token is present to wait for postMessage
+    if (isInIframe && !token) {
+      SDK.init(token, instance).then((json) => {
+        setInstance(json.instance);
+        setToken(json.token);
+      });
+    }
+  }, []);
 
-    useEffect(() => {
-        var style = document.createElement("style");
-        style.textContent = `  @keyframes ZestyAppLoaderFade {
-            0%,
-            80%,
-            100% {
-              opacity: 1;
-            }
-            40% {
-              opacity: 0.3;
-            }
-          } `;
-        document.body.appendChild(style);
-
-        // TODO should we cleanup this style element when this component unmounts?
-    }, [])
-
-    return token && instance.ZUID ? (
-        React.cloneElement(props.children, {
-            SDK,
-            token,
-            instance
-        })
-    ) : (
-        <section
-            style={{
-                backgroundColor: "#f2f7fc",
-                height: props.height || "100%",
-                width: props.width || "100%",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-            }}
-        >
-            <h3 style={{
-                color: "#5b667d",
-                fontSize: "32px",
-                fontFamily: "Mulish, Arial, Sans-Serif",
-                fontWeight: "300",
-                lineHeight: "48px",
-                letterSpacing: "0.32px"
-            }}>{props.message || "Starting Application"}</h3>
-            <div style={{
-                display: "flex",
-                height: "2rem"
-            }}>
-                <span style={{ ...bar, animationDelay: "-0.16s" }} />
-                <span style={{ ...bar, animationDelay: "1s" }} />
-                <span style={{ ...bar, animationDelay: "-0.32s" }} />
-                <span style={{ ...bar, animationDelay: "2s" }} />
-                <span style={{ ...bar, animationDelay: "-0.16s" }} />
-            </div>
-        </section>
+  // Show loading state if it is an iframe and no token is present while we wait for postMessage
+  if (!token && isInIframe) {
+    return (
+      <Box
+        display="flex"
+        flexDirection="column"
+        height="100vh"
+        justifyContent="center"
+        alignItems="center"
+      >
+        <Typography variant="h6" component="div" gutterBottom>
+          Starting Application...
+        </Typography>
+        <CircularProgress />
+      </Box>
     );
+  }
+
+  // Show SSO buttons if no token is present
+  if (!token) {
+    return (
+      <ThemeProvider theme={theme}>
+        <SSOButtonGroup
+          authServiceUrl={authApiEnvMap[props.env || "production"]}
+          onSuccess={() => {
+            setToken(Cookies.get(cookieEnvMap[props.env || "production"]));
+          }}
+          onError={() => console.log("error")}
+        >
+          <SSOButton service="google" />
+          <SSOButton service="azure" />
+          <SSOButton service="github" />
+        </SSOButtonGroup>
+        ;
+      </ThemeProvider>
+    );
+  }
+
+  return props.children;
 }
