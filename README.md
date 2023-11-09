@@ -6,7 +6,7 @@ This `AppLoader` component is designed to streamline the initialization process 
 
 - **Token-Based Authentication:** Seamlessly handles the authentication process using session tokens.
 - **Single Sign-On (SSO) Support:** Offers SSO options (Google, Azure, GitHub) for user authentication.
-- **Loading State Management:** Displays a loading screen while awaiting the session token, improving the user experience.
+- **Window Message Management:** Awaits a session token from a window message.
 - **Contextual SDK Access:** Provides easy access to the SDK's functionalities through a React context.
 
 ## Usage
