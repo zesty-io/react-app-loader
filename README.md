@@ -20,7 +20,7 @@ import MyApp from "./path/to/MyApp";
 export default function App() {
   return (
     <AppLoader authServiceUrl="YOUR_AUTH_SERVICE_URL">
-      <MyApp />
+      <MyComponent />
     </AppLoader>
   );
 }
@@ -29,7 +29,7 @@ export default function App() {
 ## Props
 
 - authServiceUrl (required): The URL of the authentication service.
-- ssoCookieKey (optional): The cookie key used for SSO authentication.
+- authCookie (optional): The cookie key used for authentication.
 - token (optional): An initial token for authentication.
 
 ## Contextual SDK Usage
@@ -40,11 +40,11 @@ Access SDK functionalities within your components using the useSDK hook.
 import { useSDK } from '@zesty-io/react-app-loader';
 
 const MyComponent = () => {
-  const { isAuthenticated, logout, request } = useSDK();
+  const { isAuthenticated, token, logout, request } = useSDK();
 
   // Example usage
   useEffect(() => {
-    request('/content/models')
+    request('/some/endpoint')
       .then((res) => {
         // Handle response
       })
