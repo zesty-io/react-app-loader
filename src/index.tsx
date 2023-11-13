@@ -20,6 +20,7 @@ interface AppLoaderContextType {
   isAuthenticated: boolean;
   logout: () => void;
   request: (url: string, opts?: RequestInit) => Promise<unknown>;
+  messages: MessageEvent[];
 }
 
 const AppLoaderContext = createContext<AppLoaderContextType>({
@@ -27,34 +28,36 @@ const AppLoaderContext = createContext<AppLoaderContextType>({
   isAuthenticated: false,
   logout: () => {},
   request: async () => {},
+  messages: [],
 });
 
 interface AppLoaderProps {
   children: ReactNode;
   authServiceUrl: string;
   token?: string;
-  ssoCookieKey?: string;
+  authCookie?: string;
 }
 
 export const AppLoader = ({
   children,
   authServiceUrl,
   token,
-  ssoCookieKey,
+  authCookie,
 }: AppLoaderProps) => {
   const [tokenState, setTokenState] = useState(
-    token || Cookies.get(ssoCookieKey || "") || ""
+    token || Cookies.get(authCookie || "") || ""
   );
-  const [isAuthenticating, setIsAuthenticating] = useState(
-    ssoCookieKey ? false : true
-  );
+  const [isAuthenticating, setIsAuthenticating] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [messages, setMessages] = useState<MessageEvent[]>([]);
 
-  const shouldShowSSO = ssoCookieKey && !tokenState;
+  const shouldShowSSO = authCookie && !tokenState;
 
   useEffect(() => {
-    if (shouldShowSSO) return;
     setIsAuthenticating(true);
+    SDK.setMessageReceivedCallback((newMessages: MessageEvent[]) => {
+      setMessages([...newMessages]);
+    });
     SDK.init(authServiceUrl, tokenState)
       .then((response: any) => {
         setTokenState(response.token);
@@ -71,7 +74,7 @@ export const AppLoader = ({
     return () => {
       SDK.stopTokenKeepAlive();
     };
-  }, [authServiceUrl, tokenState, ssoCookieKey]);
+  }, [authServiceUrl, tokenState, authCookie]);
 
   const logout = () => {
     SDK.logout().then(() => {
@@ -86,6 +89,7 @@ export const AppLoader = ({
     isAuthenticated,
     logout,
     request: SDK.request,
+    messages,
   };
 
   if (isAuthenticating) {
@@ -113,7 +117,7 @@ export const AppLoader = ({
         <SSOButtonGroup
           authServiceUrl={authServiceUrl}
           onSuccess={() => {
-            setTokenState(Cookies.get(ssoCookieKey) || "");
+            setTokenState(Cookies.get(authCookie) || "");
           }}
           onError={() => console.error("SSO Error")}
         >

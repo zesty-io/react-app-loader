@@ -40,7 +40,7 @@ Access SDK functionalities within your components using the useSDK hook.
 import { useSDK } from '@zesty-io/react-app-loader';
 
 const MyComponent = () => {
-  const { isAuthenticated, token, logout, request } = useSDK();
+  const { isAuthenticated, token, logout, request, messages } = useSDK();
 
   // Example usage
   useEffect(() => {
