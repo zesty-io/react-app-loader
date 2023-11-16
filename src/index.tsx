@@ -92,6 +92,24 @@ export const AppLoader = ({
     messages,
   };
 
+  if (shouldShowSSO) {
+    return (
+      <ThemeProvider theme={theme}>
+        <SSOButtonGroup
+          authServiceUrl={authServiceUrl}
+          onSuccess={() => {
+            setTokenState(Cookies.get(authCookie) || "");
+          }}
+          onError={() => console.error("SSO Error")}
+        >
+          <SSOButton service="google" />
+          <SSOButton service="azure" />
+          <SSOButton service="github" />
+        </SSOButtonGroup>
+      </ThemeProvider>
+    );
+  }
+
   if (isAuthenticating) {
     return (
       <ThemeProvider theme={theme}>
@@ -107,24 +125,6 @@ export const AppLoader = ({
           </Typography>
           <CircularProgress />
         </Box>
-      </ThemeProvider>
-    );
-  }
-
-  if (shouldShowSSO) {
-    return (
-      <ThemeProvider theme={theme}>
-        <SSOButtonGroup
-          authServiceUrl={authServiceUrl}
-          onSuccess={() => {
-            setTokenState(Cookies.get(authCookie) || "");
-          }}
-          onError={() => console.error("SSO Error")}
-        >
-          <SSOButton service="google" />
-          <SSOButton service="azure" />
-          <SSOButton service="github" />
-        </SSOButtonGroup>
       </ThemeProvider>
     );
   }
