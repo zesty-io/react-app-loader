@@ -3,10 +3,14 @@
   "version": "1.0.0-alpha.1",
   "description": "React component for loading a custom app via the app-sdk",
   "type": "module",
-  "module": "dist/index.js",
-  "main": "dist/index.js",
+  "main": "./cjs/index.js",
+  "module": "./es/index.js",
+  "types": "./es/index.d.ts",
   "scripts": {
-    "build": "rm -rf dist && NODE_ENV=production babel index.js --out-dir dist --copy-files ",
+    "build:esm": "babel src --out-dir es --extensions '.ts,.tsx'",
+    "build:cjs": "babel src --out-dir cjs --extensions '.ts,.tsx' --presets=@babel/preset-env,@babel/preset-typescript --plugins=@babel/plugin-transform-modules-commonjs",
+    "build:types": "tsc --emitDeclarationOnly",
+    "build": "npm run build:esm && npm run build:cjs && npm run build:types",
     "release": "npm run build && npm publish --access public",
     "release:alpha": "npm run build && npm publish --tag alpha --access public",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -23,16 +27,28 @@
   },
   "homepage": "https://github.com/zesty-io/react-app-loader#readme",
   "peerDependencies": {
-    "@zesty-io/app-sdk": "^1.0.0-alpha.1",
     "react": "^18.0.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.17.6",
+    "@babel/cli": "^7.23.0",
     "@babel/core": "^7.17.9",
+    "@babel/plugin-transform-modules-commonjs": "^7.23.0",
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-react": "^7.16.7",
+    "@babel/preset-typescript": "^7.23.2",
+    "@types/js-cookie": "^3.0.6",
     "husky": "^7.0.0",
     "prettier": "^2.3.2",
-    "pretty-quick": "^3.1.1"
-  }
+    "pretty-quick": "^3.1.1",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@zesty-io/app-sdk": "file:../app-sdk/zesty-io-app-sdk-1.0.0-alpha.1.tgz",
+    "@zesty-io/material": "^0.12.0",
+    "js-cookie": "^3.0.5"
+  },
+  "files": [
+    "cjs",
+    "es"
+  ]
 }
