@@ -1,6 +1,6 @@
 {
   "name": "@zesty-io/react-app-loader",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0-alpha.2",
   "description": "React component for loading a custom app via the app-sdk",
   "type": "module",
   "main": "./cjs/index.js",
@@ -43,7 +43,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@zesty-io/app-sdk": "file:zesty-io-app-sdk-1.0.0-alpha.1.tgz",
+    "@zesty-io/app-sdk": "1.0.0-alpha.2",
     "@zesty-io/material": "^0.12.0",
     "js-cookie": "^3.0.5"
   },
